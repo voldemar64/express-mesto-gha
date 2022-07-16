@@ -1,6 +1,4 @@
 const User = require('../models/user');
-const ValidationError = require('../errors/ValidationError');
-const NotFound = require('../errors/NotFound');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -18,12 +16,8 @@ module.exports.getCurrentUser = (req, res) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'NotFound') {
-        const error = new NotFound('Пользователь не найден.');
-        res.status(error.statusCode).send({ message: error.message });
-      } else if (err.name === 'ValidationError') {
-        const error = new ValidationError('Переданы некорректные данные о пользователе.');
-        res.status(error.statusCode).send({ message: error.message });
+      if (err.statusCode === 404) {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -35,9 +29,8 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const error = new ValidationError('Переданы некорректные данные при создании пользователя.');
-        res.status(error.statusCode).send({ message: error.message });
+      if (err.statusCode === 400) {
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -55,9 +48,10 @@ module.exports.patchUser = (req, res) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const error = new ValidationError('Переданы некорректные данные при обновлении пользователя.');
-        res.status(error.statusCode).send({ message: error.message });
+      if (err.statusCode === 400) {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
+      } else if (err.statusCode === 404) {
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -75,9 +69,10 @@ module.exports.patchAvatar = (req, res) => {
       res.status(200).send({ user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        const error = new ValidationError('Переданы некорректные данные при обновлении аватара.');
-        res.status(error.statusCode).send({ message: error.message });
+      if (err.statusCode === 400) {
+        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+      } else if (res.statusCode === 404) {
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
