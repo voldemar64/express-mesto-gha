@@ -1,4 +1,6 @@
 const Cards = require('../models/cards');
+const ValidationError = require('../errors/ValidationError');
+const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.getCards = (req, res) => {
   Cards.find({})
@@ -9,8 +11,14 @@ module.exports.getCards = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params.id;
   Cards.findByIdAndRemove(cardId)
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(500).send({ message: 'Не удалось удалить карточку.' }));
+    .then((card) => res.send({ card }))
+    .catch((err) => {
+      if (err.name === 'NotFoundError') {
+        throw new NotFoundError('Карточка не найдена.');
+      } else {
+        res.status(500).send({ message: 'Не удалось удалить карточку.' });
+      }
+    });
 };
 
 module.exports.createCard = (req, res) => {
@@ -18,7 +26,13 @@ module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   Cards.create({ name, link, owner: ownerId })
     .then((card) => res.send({ card }))
-    .catch(() => res.status(500).send({ message: 'Не удалось добавить карточку.' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationError('Переданы некорректные данные для карточки.');
+      } else {
+        res.status(500).send({ message: 'Не удалось добавить карточку.' });
+      }
+    });
 };
 
 module.exports.likeCard = (req, res) => {
@@ -29,7 +43,15 @@ module.exports.likeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ card }))
-    .catch(() => res.status(500).send({ message: 'Не удалось лайкнуть карточку.' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationError('Переданы некорректные данные для карточки.');
+      } else if (err.name === 'NotFoundError') {
+        throw new NotFoundError('Карточка не найдена.');
+      } else {
+        res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
+      }
+    });
 };
 
 module.exports.dislikeCard = (req, res) => {
@@ -40,5 +62,13 @@ module.exports.dislikeCard = (req, res) => {
     { new: true },
   )
     .then((card) => res.send({ card }))
-    .catch(() => res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError') {
+        throw new ValidationError('Переданы некорректные данные для карточки.');
+      } else if (err.name === 'NotFoundError') {
+        throw new NotFoundError('Карточка не найдена.');
+      } else {
+        res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
+      }
+    });
 };
