@@ -9,7 +9,12 @@ module.exports.getCards = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params;
   Cards.findByIdAndRemove(cardId)
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => {
+      if (!card) {
+        return res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+      }
+      return res.status(200).send({ data: card });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Карточка с указанным _id не найдена.' });
@@ -69,8 +74,8 @@ module.exports.dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
+        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       }
-      return res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
+      res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
     });
 };
