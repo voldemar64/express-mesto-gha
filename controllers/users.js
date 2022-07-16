@@ -4,14 +4,14 @@ const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .then((users) => res.send({ users }))
+    .then((users) => res.status(200).send({ users }))
     .catch(() => res.status(500).send({ message: 'Список пользователей не получен.' }));
 };
 
 module.exports.getCurrentUser = (req, res) => {
-  const { userId } = req.params.id;
+  const { userId } = req.user._id;
   User.findById(userId)
-    .then((user) => res.send({ user }))
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'NotFoundError') {
         throw new NotFoundError('Пользователь не найден.');
@@ -26,7 +26,7 @@ module.exports.getCurrentUser = (req, res) => {
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ user }))
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при создании пользователя.');
@@ -37,10 +37,10 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.patchUser = (req, res) => {
-  const { userId } = req.params._id;
+  const { userId } = req.user._id;
   const { name, about } = req.body;
-  User.findByIdAndUpdate(userId, { name, about })
-    .then((user) => res.send({ user }))
+  User.findByIdAndUpdate(userId, { name, about }, { new: true })
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при обновлении пользователя.');
@@ -51,10 +51,10 @@ module.exports.patchUser = (req, res) => {
 };
 
 module.exports.patchAvatar = (req, res) => {
-  const { userId } = req.params._id;
+  const { userId } = req.user._id;
   const { avatar } = req.body;
-  User.findByIdAndUpdate(userId, { avatar })
-    .then((user) => res.send({ user }))
+  User.findByIdAndUpdate(userId, { avatar }, { new: true })
+    .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при обновлении аватара.');

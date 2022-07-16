@@ -4,28 +4,22 @@ const NotFoundError = require('../errors/NotFoundError');
 
 module.exports.getCards = (req, res) => {
   Cards.find({})
-    .then((cards) => res.send({ cards }))
+    .then((cards) => res.status(200).send({ cards }))
     .catch(() => res.status(500).send({ message: 'Карточки не получены.' }));
 };
 
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params.id;
   Cards.findByIdAndRemove(cardId)
-    .then((card) => res.send({ card }))
-    .catch((err) => {
-      if (err.name === 'NotFoundError') {
-        throw new NotFoundError('Карточка не найдена.');
-      } else {
-        res.status(500).send({ message: 'Не удалось удалить карточку.' });
-      }
-    });
+    .then((card) => res.status(200).send({ card }))
+    .catch(() => res.status(500).send({ message: 'Не удалось удалить карточку.' }));
 };
 
 module.exports.createCard = (req, res) => {
   const ownerId = req.user._id;
   const { name, link } = req.body;
   Cards.create({ name, link, owner: ownerId })
-    .then((card) => res.send({ card }))
+    .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные для карточки.');
@@ -37,12 +31,13 @@ module.exports.createCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   const ownerId = req.user._id;
+  const cardId = req.params.id;
   Cards.findByIdAndUpdate(
-    ownerId,
+    cardId,
     { $addToSet: { likes: ownerId } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные для карточки.');
@@ -56,12 +51,13 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   const ownerId = req.user._id;
+  const cardId = req.params.id;
   Cards.findByIdAndUpdate(
-    ownerId,
+    cardId,
     { $pull: { likes: ownerId } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
+    .then((card) => res.status(200).send({ card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные для карточки.');
