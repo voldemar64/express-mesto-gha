@@ -1,6 +1,6 @@
 const Cards = require('../models/cards');
 const ValidationError = require('../errors/ValidationError');
-const NotFoundError = require('../errors/NotFoundError');
+const NotFound = require('../errors/NotFound');
 
 module.exports.getCards = (req, res) => {
   Cards.find({})
@@ -53,8 +53,8 @@ module.exports.likeCard = (req, res) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные для карточки.');
         res.status(error.statusCode).send({ message: error.message });
-      } else if (err.name === 'NotFoundError') {
-        const error = new NotFoundError('Карточка не найдена.');
+      } else if (err.name === 'NotFound') {
+        const error = new NotFound('Карточка не найдена.');
         res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
@@ -80,8 +80,8 @@ module.exports.dislikeCard = (req, res) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные для карточки.');
         res.status(error.statusCode).send({ message: error.message });
-      } else if (err.name === 'NotFoundError') {
-        const error = new NotFoundError('Карточка не найдена.');
+      } else if (err.name === 'NotFound') {
+        const error = new NotFound('Карточка не найдена.');
         res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
