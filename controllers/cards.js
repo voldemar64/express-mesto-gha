@@ -9,7 +9,7 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params.id;
+  const { cardId } = req.params;
   Cards.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
@@ -37,7 +37,7 @@ module.exports.createCard = (req, res) => {
 
 module.exports.likeCard = (req, res) => {
   const ownerId = req.user._id;
-  const cardId = req.params.id;
+  const { cardId } = req.params;
   Cards.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: ownerId } },
@@ -64,7 +64,7 @@ module.exports.likeCard = (req, res) => {
 
 module.exports.dislikeCard = (req, res) => {
   const ownerId = req.user._id;
-  const cardId = req.params.id;
+  const { cardId } = req.params;
   Cards.findByIdAndUpdate(
     cardId,
     { $pull: { likes: ownerId } },
