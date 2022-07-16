@@ -11,7 +11,12 @@ module.exports.getCards = (req, res) => {
 module.exports.deleteCard = (req, res) => {
   const { cardId } = req.params.id;
   Cards.findByIdAndRemove(cardId)
-    .then((card) => res.status(200).send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new Error();
+      }
+      res.status(200).send({ card });
+    })
     .catch(() => res.status(500).send({ message: 'Не удалось удалить карточку.' }));
 };
 
@@ -38,7 +43,12 @@ module.exports.likeCard = (req, res) => {
     { $addToSet: { likes: ownerId } },
     { new: true },
   )
-    .then((card) => res.status(200).send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new Error();
+      }
+      res.status(200).send({ card });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные для карточки.');
@@ -60,7 +70,12 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: ownerId } },
     { new: true },
   )
-    .then((card) => res.status(200).send({ card }))
+    .then((card) => {
+      if (!card) {
+        throw new Error();
+      }
+      res.status(200).send({ card });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные для карточки.');

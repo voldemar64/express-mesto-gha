@@ -11,7 +11,12 @@ module.exports.getUsers = (req, res) => {
 module.exports.getCurrentUser = (req, res) => {
   const { userId } = req.user._id;
   User.findById(userId)
-    .then((user) => res.status(200).send({ user }))
+    .then((user) => {
+      if (!user) {
+        throw new Error();
+      }
+      res.status(200).send({ user });
+    })
     .catch((err) => {
       if (err.name === 'NotFoundError') {
         const error = new NotFoundError('Пользователь не найден.');
@@ -43,7 +48,12 @@ module.exports.patchUser = (req, res) => {
   const { userId } = req.user._id;
   const { name, about } = req.body;
   User.findByIdAndUpdate(userId, { name, about }, { new: true })
-    .then((user) => res.status(200).send({ user }))
+    .then((user) => {
+      if (!user) {
+        throw new Error();
+      }
+      res.status(200).send({ user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные при обновлении пользователя.');
@@ -58,7 +68,12 @@ module.exports.patchAvatar = (req, res) => {
   const { userId } = req.user._id;
   const { avatar } = req.body;
   User.findByIdAndUpdate(userId, { avatar }, { new: true })
-    .then((user) => res.status(200).send({ user }))
+    .then((user) => {
+      if (!user) {
+        throw new Error();
+      }
+      res.status(200).send({ user });
+    })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные при обновлении аватара.');
