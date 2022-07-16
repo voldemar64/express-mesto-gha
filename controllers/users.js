@@ -11,10 +11,9 @@ module.exports.getCurrentUser = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-        return;
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       }
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch(() => res.status(500).send({ message: 'Произошла неизвестная ошибка.' }));
 };
@@ -25,10 +24,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
+      return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
     });
 };
 
@@ -38,10 +36,9 @@ module.exports.patchUser = (req, res) => {
   User.findByIdAndUpdate(ownerId, { name, about }, { new: true })
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-        return;
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       }
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -58,16 +55,14 @@ module.exports.patchAvatar = (req, res) => {
   User.findByIdAndUpdate(ownerId, { avatar }, { new: true })
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
-        return;
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       }
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
+      return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
     });
 };

@@ -12,10 +12,9 @@ module.exports.deleteCard = (req, res) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Карточка с указанным _id не найдена.' });
-        return;
+        return res.status(400).send({ message: 'Карточка с указанным _id не найдена.' });
       }
-      res.status(500).send({ message: 'Не удалось добавить карточку.' });
+      return res.status(500).send({ message: 'Не удалось добавить карточку.' });
     });
 };
 
@@ -26,10 +25,9 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(200).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для карточки.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные для карточки.' });
       }
-      res.status(500).send({ message: 'Не удалось добавить карточку.' });
+      return res.status(500).send({ message: 'Не удалось добавить карточку.' });
     });
 };
 
@@ -43,17 +41,15 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
-        return;
+        return res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
       }
-      res.status(200).send({ data: card });
+      return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
       }
-      res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
+      return res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
     });
 };
 
@@ -67,16 +63,14 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
-        return;
+        return res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
       }
-      res.status(200).send({ data: card });
+      return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
       }
-      res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
+      return res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
     });
 };
