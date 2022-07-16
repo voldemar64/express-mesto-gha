@@ -14,9 +14,11 @@ module.exports.getCurrentUser = (req, res) => {
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'NotFoundError') {
-        throw new NotFoundError('Пользователь не найден.');
+        const error = new NotFoundError('Пользователь не найден.');
+        res.send(error);
       } else if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные о пользователе.');
+        const error = new ValidationError('Переданы некорректные данные о пользователе.');
+        res.send(error);
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -29,7 +31,8 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные при создании пользователя.');
+        const error = new ValidationError('Переданы некорректные данные при создании пользователя.');
+        res.send(error);
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -43,7 +46,8 @@ module.exports.patchUser = (req, res) => {
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные при обновлении пользователя.');
+        const error = new ValidationError('Переданы некорректные данные при обновлении пользователя.');
+        res.send(error);
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -57,7 +61,8 @@ module.exports.patchAvatar = (req, res) => {
     .then((user) => res.status(200).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new ValidationError('Переданы некорректные данные при обновлении аватара.');
+        const error = new ValidationError('Переданы некорректные данные при обновлении аватара.');
+        res.send(error);
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
