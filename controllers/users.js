@@ -15,10 +15,10 @@ module.exports.getCurrentUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'NotFoundError') {
         const error = new NotFoundError('Пользователь не найден.');
-        res.status(error.status).send(error.message);
+        res.status(error.statusCode).send({ message: error.message });
       } else if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные о пользователе.');
-        res.status(error.status).send(error.message);
+        res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -32,7 +32,7 @@ module.exports.createUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные при создании пользователя.');
-        res.status(error.status).send(error.message);
+        res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -47,7 +47,7 @@ module.exports.patchUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные при обновлении пользователя.');
-        res.status(error.status).send(error.message);
+        res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
@@ -62,7 +62,7 @@ module.exports.patchAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         const error = new ValidationError('Переданы некорректные данные при обновлении аватара.');
-        res.status(error.status).send(error.message);
+        res.status(error.statusCode).send({ message: error.message });
       } else {
         res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
       }
