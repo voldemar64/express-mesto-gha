@@ -1,9 +1,14 @@
 const Cards = require('../models/cards');
+const {
+  SERVER_ERROR_STATUS,
+  NOTFOUND_ERROR_STATUS,
+  VALIDATION_ERROR_STATUS,
+} = require('../utils/errors');
 
 module.exports.getCards = (req, res) => {
   Cards.find({})
     .then((cards) => res.status(200).send({ data: cards }))
-    .catch(() => res.status(500).send({ message: 'Карточки не получены.' }));
+    .catch(() => res.status(SERVER_ERROR_STATUS).send({ message: 'Карточки не получены.' }));
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -11,15 +16,15 @@ module.exports.deleteCard = (req, res) => {
   Cards.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
+        return res.status(NOTFOUND_ERROR_STATUS).send({ message: 'Карточка с указанным _id не найдена.' });
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
+        return res.status(VALIDATION_ERROR_STATUS).send({ message: 'Передан некорректный _id карточки.' });
       }
-      return res.status(500).send({ message: 'Не удалось удалить карточку.' });
+      return res.status(SERVER_ERROR_STATUS).send({ message: 'Не удалось удалить карточку.' });
     });
 };
 
@@ -30,9 +35,9 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные для карточки.' });
+        return res.status(VALIDATION_ERROR_STATUS).send({ message: 'Переданы некорректные данные для карточки.' });
       }
-      return res.status(500).send({ message: 'Не удалось добавить карточку.' });
+      return res.status(SERVER_ERROR_STATUS).send({ message: 'Не удалось добавить карточку.' });
     });
 };
 
@@ -46,15 +51,15 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
+        return res.status(NOTFOUND_ERROR_STATUS).send({ message: 'Передан несуществующий _id карточки.' });
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
+        return res.status(VALIDATION_ERROR_STATUS).send({ message: 'Передан некорректный _id карточки.' });
       }
-      return res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
+      return res.status(SERVER_ERROR_STATUS).send({ message: 'Не удалось лайкнуть карточку.' });
     });
 };
 
@@ -68,14 +73,14 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        return res.status(404).send({ message: 'Передан несуществующий _id карточки.' });
+        return res.status(NOTFOUND_ERROR_STATUS).send({ message: 'Передан несуществующий _id карточки.' });
       }
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Передан некорректный _id карточки.' });
+        return res.status(VALIDATION_ERROR_STATUS).send({ message: 'Передан некорректный _id карточки.' });
       }
-      res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
+      return res.status(SERVER_ERROR_STATUS).send({ message: 'Не удалось дизлайкнуть карточку.' });
     });
 };
