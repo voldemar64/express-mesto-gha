@@ -16,7 +16,7 @@ module.exports.getCurrentUser = (req, res) => {
       return res.status(200).send({ data: user });
     })
     .catch((err) => {
-      if (err.statusCode === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан некорректный _id пользователя.' });
       }
       return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
