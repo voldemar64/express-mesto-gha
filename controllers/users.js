@@ -15,13 +15,18 @@ module.exports.getCurrentUser = (req, res) => {
       }
       return res.status(200).send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла неизвестная ошибка.' }));
+    .catch((err) => {
+      if (err.statusCode === 'CastError') {
+        return res.status(400).send({ message: 'Передан некорректный _id пользователя.' });
+      }
+      return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
+    });
 };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
@@ -33,26 +38,28 @@ module.exports.createUser = (req, res) => {
 module.exports.patchUser = (req, res) => {
   const ownerId = req.user._id;
   const { name, about } = req.body;
-  User.findByIdAndUpdate(ownerId, { name, about }, { new: true })
+  User.findByIdAndUpdate(ownerId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
+        return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
       }
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
-        return;
+        return res.status(400).send({ message: 'Переданы некорректные данные при обновлении профиля.' });
       }
-      res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Передан некорректный _id пользователя.' });
+      }
+      return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
     });
 };
 
 module.exports.patchAvatar = (req, res) => {
   const ownerId = req.user._id;
   const { avatar } = req.body;
-  User.findByIdAndUpdate(ownerId, { avatar }, { new: true })
+  User.findByIdAndUpdate(ownerId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь с указанным _id не найден.' });
@@ -62,6 +69,9 @@ module.exports.patchAvatar = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы некорректные данные при обновлении аватара.' });
+      }
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Передан некорректный _id пользователя.' });
       }
       return res.status(500).send({ message: 'Произошла неизвестная ошибка.' });
     });

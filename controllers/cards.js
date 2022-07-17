@@ -16,10 +16,10 @@ module.exports.deleteCard = (req, res) => {
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Карточка с указанным _id не найдена.' });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
       }
-      return res.status(500).send({ message: 'Не удалось добавить карточку.' });
+      return res.status(500).send({ message: 'Не удалось удалить карточку.' });
     });
 };
 
@@ -27,7 +27,7 @@ module.exports.createCard = (req, res) => {
   const ownerId = req.user._id;
   const { name, link } = req.body;
   Cards.create({ name, link, owner: ownerId })
-    .then((card) => res.status(200).send({ data: card }))
+    .then((card) => res.status(201).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Переданы некорректные данные для карточки.' });
@@ -51,8 +51,8 @@ module.exports.likeCard = (req, res) => {
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка.' });
+      if (err.name === 'CastError') {
+        return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
       }
       return res.status(500).send({ message: 'Не удалось лайкнуть карточку.' });
     });
@@ -73,8 +73,8 @@ module.exports.dislikeCard = (req, res) => {
       return res.status(200).send({ data: card });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка.' });
+      if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Передан некорректный _id карточки.' });
       }
       res.status(500).send({ message: 'Не удалось дизлайкнуть карточку.' });
     });
