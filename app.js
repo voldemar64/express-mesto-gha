@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { NOTFOUND_ERROR_STATUS } = require('./utils/errors');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -24,7 +25,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', (_req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+  res.status(NOTFOUND_ERROR_STATUS).send({ message: 'Страница не найдена' });
 });
 
 app.listen(PORT, () => {
