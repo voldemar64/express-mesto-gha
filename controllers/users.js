@@ -52,6 +52,8 @@ module.exports.getUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new ValidationError('Передан некорректный _id пользователя.');
+      } else if (err.name === 'NotFoundError') {
+        throw new NotFound('Пользователь по указанному _id не найден.');
       }
     })
     .catch(next);
