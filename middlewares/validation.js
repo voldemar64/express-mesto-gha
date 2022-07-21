@@ -21,7 +21,7 @@ module.exports.signupValidation = celebrate({
 
 module.exports.currentUserValidation = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required(),
+    id: Joi.string().required().length(24).hex(),
   }),
 });
 
@@ -47,6 +47,6 @@ module.exports.cardValidation = celebrate({
 
 module.exports.cardIdValidation = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().required(),
+    id: Joi.string().required().length(24).hex(),
   }),
 });

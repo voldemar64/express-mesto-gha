@@ -2,27 +2,27 @@ const Cards = require('../models/cards');
 
 const ValidationError = require('../errors/ValidationError');
 const NotFound = require('../errors/NotFound');
-const CastError = require('../errors/CastError');
+const BadRequest = require('../errors/BadRequest');
+const Forbidden = require('../errors/Forbidden');
 
 module.exports.getCards = (req, res, next) => {
   Cards.find({})
-    .then((cards) => res.status(200).send({ data: cards }))
+    .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
 
 module.exports.deleteCard = (req, res, next) => {
   const { id } = req.params;
-  Cards.findByIdAndRemove(id)
+  Cards.findById(id)
     .then((card) => {
       if (!card) {
-        throw new NotFound('Карточка с указанным _id не найдена.');
+        throw new NotFound('Карточка с указанным id не найдена.');
       }
-      return res.status(200).send({ data: card });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        throw new CastError('Передан некорректный _id карточки.');
+      if (card.owner.toString() !== req.user._id) {
+        throw new Forbidden('Невозможно удалить чужую карточку.');
       }
+      Cards.findByIdAndRemove(id)
+        .then(() => res.send({ data: card }));
     })
     .catch(next);
 };
@@ -52,11 +52,11 @@ module.exports.likeCard = (req, res, next) => {
       if (!card) {
         throw new NotFound('Передан несуществующий _id карточки.');
       }
-      return res.status(200).send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new CastError('Передан некорректный _id карточки.');
+        throw new BadRequest('Передан некорректный _id карточки.');
       }
     })
     .catch(next);
@@ -74,11 +74,11 @@ module.exports.dislikeCard = (req, res, next) => {
       if (!card) {
         throw new NotFound('Передан несуществующий _id карточки.');
       }
-      return res.status(200).send({ data: card });
+      return res.send({ data: card });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new CastError('Передан некорректный _id карточки.');
+        throw new BadRequest('Передан некорректный _id карточки.');
       }
     })
     .catch(next);

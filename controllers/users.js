@@ -19,7 +19,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.status(200).send({ data: users }))
+    .then((users) => res.send({ data: users }))
     .catch(next);
 };
 
@@ -30,11 +30,14 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
-      return res.status(200).send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new ValidationError('Передан некорректный _id пользователя.');
+      }
+      if (err.name === 'NotFound') {
+        throw new NotFound('Пользователь по указанному _id не найден.');
       }
     })
     .catch(next);
@@ -47,12 +50,13 @@ module.exports.getUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
-      return res.status(200).send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new ValidationError('Передан некорректный _id пользователя.');
-      } else if (err.name === 'NotFoundError') {
+      }
+      if (err.name === 'NotFoundError') {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
     })
@@ -95,7 +99,7 @@ module.exports.patchUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь с указанным _id не найден.');
       }
-      return res.status(200).send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -113,7 +117,7 @@ module.exports.patchAvatar = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь с указанным _id не найден.');
       }
-      return res.status(200).send({ data: user });
+      return res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
