@@ -22,7 +22,17 @@ module.exports.deleteCard = (req, res, next) => {
         throw new Forbidden('Невозможно удалить чужую карточку.');
       }
       Cards.findByIdAndRemove(id)
-        .then(() => res.send({ data: card }));
+        .then(() => res.send({ data: card }))
+        .catch(() => {
+          throw new Error('Неизвестная ошибка.');
+        });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        throw new BadRequest('Передан некорректный _id карточки.');
+      }
+
+      throw new Error('Неизвестная ошибка.');
     })
     .catch(next);
 };
@@ -36,6 +46,8 @@ module.exports.createCard = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные для карточки.');
       }
+
+      throw new Error('Неизвестная ошибка.');
     })
     .catch(next);
 };
@@ -58,6 +70,8 @@ module.exports.likeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequest('Передан некорректный _id карточки.');
       }
+
+      throw new Error('Неизвестная ошибка.');
     })
     .catch(next);
 };
@@ -80,6 +94,8 @@ module.exports.dislikeCard = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequest('Передан некорректный _id карточки.');
       }
+
+      throw new Error('Неизвестная ошибка.');
     })
     .catch(next);
 };

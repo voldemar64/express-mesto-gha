@@ -2,7 +2,7 @@
   "name": "express-mesto-gha",
   "version": "1.0.0",
   "description": "[![Tests for sprint 13](https://github.com/voldemar64/express-mesto-gha/actions/workflows/tests-13-sprint.yml/badge.svg)](https://github.com/voldemar64/express-mesto-gha/actions/workflows/tests-13-sprint.yml)   [![Tests for sprint 14](https://github.com/voldemar64/express-mesto-gha/actions/workflows/tests-14-sprint.yml/badge.svg)](https://github.com/voldemar64/express-mesto-gha/actions/workflows/tests-14-sprint.yml)\r # Проект Mesto фронтенд + бэкенд",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
     "start": "node app.js",
