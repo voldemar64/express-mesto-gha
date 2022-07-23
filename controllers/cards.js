@@ -32,7 +32,7 @@ module.exports.deleteCard = (req, res, next) => {
         throw new BadRequest('Передан некорректный _id карточки.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -47,7 +47,7 @@ module.exports.createCard = (req, res, next) => {
         throw new ValidationError('Переданы некорректные данные для карточки.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -71,7 +71,7 @@ module.exports.likeCard = (req, res, next) => {
         throw new BadRequest('Передан некорректный _id карточки.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -95,7 +95,7 @@ module.exports.dislikeCard = (req, res, next) => {
         throw new BadRequest('Передан некорректный _id карточки.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };

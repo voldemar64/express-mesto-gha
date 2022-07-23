@@ -40,7 +40,7 @@ module.exports.getCurrentUser = (req, res, next) => {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -62,7 +62,7 @@ module.exports.getUser = (req, res, next) => {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -92,7 +92,7 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictError('Пользователь с таким email уже существует');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -112,7 +112,7 @@ module.exports.patchUser = (req, res, next) => {
         throw new ValidationError('Переданы некорректные данные при обновлении профиля.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
@@ -132,7 +132,7 @@ module.exports.patchAvatar = (req, res, next) => {
         throw new ValidationError('Переданы некорректные данные при обновлении аватара.');
       }
 
-      throw new Error('Неизвестная ошибка.');
+      throw err;
     })
     .catch(next);
 };
