@@ -19,7 +19,7 @@ module.exports.login = (req, res, next) => {
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send({ users }))
     .catch(next);
 };
 
@@ -30,7 +30,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -52,7 +52,7 @@ module.exports.getUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь по указанному _id не найден.');
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -83,7 +83,7 @@ module.exports.createUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({ data: user }))
+    .then((user) => res.status(201).send({ user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new ValidationError('Переданы некорректные данные при создании пользователя.');
@@ -105,7 +105,7 @@ module.exports.patchUser = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь с указанным _id не найден.');
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
@@ -125,7 +125,7 @@ module.exports.patchAvatar = (req, res, next) => {
       if (!user) {
         throw new NotFound('Пользователь с указанным _id не найден.');
       }
-      return res.send({ data: user });
+      return res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
